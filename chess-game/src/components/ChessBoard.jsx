@@ -27,29 +27,43 @@ function ChessBoard() {
 
     const [board, setBoard] = useState(initialBoard);
     const [selectedSquare, setSelectedSquare] = useState(null); 
+    const [currentTurn, setCurrentTurn] = useState('white');
+
 
     function handleSquareClick(row, col) {
   const clickedPiece = board[row][col];
 
   if (selectedSquare) {
-    // A piece is already selected — try to move
-    const newBoard = board.map(r => [...r]); // deep copy
-
     const { row: fromRow, col: fromCol } = selectedSquare;
+    const pieceToMove = board[fromRow][fromCol];
 
-    newBoard[row][col] = board[fromRow][fromCol]; // move piece
-    newBoard[fromRow][fromCol] = null; // clear old square
+    // Make a copy of the board
+    const newBoard = board.map(r => [...r]);
+
+    // Move the piece
+    newBoard[row][col] = pieceToMove;
+    newBoard[fromRow][fromCol] = null;
 
     setBoard(newBoard);
-    setSelectedSquare(null); // clear selection
+    setSelectedSquare(null);
+
+    // Switch turn
+    setCurrentTurn(currentTurn === 'white' ? 'black' : 'white');
   } else if (clickedPiece) {
-    // No selection yet, so select this piece
-    setSelectedSquare({ row, col });
+    const isWhite = clickedPiece.includes('white');
+
+    // Check if clicked piece belongs to the player whose turn it is
+    if ((currentTurn === 'white' && isWhite) || (currentTurn === 'black' && !isWhite)) {
+      setSelectedSquare({ row, col });
+    }
   }
 }
 
+
            
   return (
+    <>
+    <h2 style={{ textAlign: 'center' }}>Turn: {currentTurn.toUpperCase()}</h2>
     <div className="board">
         {
             board.map((row, i)=>
@@ -69,7 +83,9 @@ function ChessBoard() {
             })
         )
         }
-        </div>
+    </div>
+    </>
+    
   )
 }
 
