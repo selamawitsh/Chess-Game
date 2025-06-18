@@ -22,3 +22,8 @@
 .white {
   color: white;
 }
+
+.selected {
+  outline: 3px solid yellow;
+  background-color: red;
+}
