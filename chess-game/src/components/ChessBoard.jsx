@@ -29,15 +29,24 @@ function ChessBoard() {
     const [selectedSquare, setSelectedSquare] = useState(null); 
 
     function handleSquareClick(row, col) {
-        const piece = board[row][col];
+  const clickedPiece = board[row][col];
 
-        if (piece){
-            setSelectedSquare({row,col});
-        }
-        else{
-            setSelectedSquare(null);
-        }
-    }
+  if (selectedSquare) {
+    // A piece is already selected — try to move
+    const newBoard = board.map(r => [...r]); // deep copy
+
+    const { row: fromRow, col: fromCol } = selectedSquare;
+
+    newBoard[row][col] = board[fromRow][fromCol]; // move piece
+    newBoard[fromRow][fromCol] = null; // clear old square
+
+    setBoard(newBoard);
+    setSelectedSquare(null); // clear selection
+  } else if (clickedPiece) {
+    // No selection yet, so select this piece
+    setSelectedSquare({ row, col });
+  }
+}
 
            
   return (
