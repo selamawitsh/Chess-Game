@@ -1,0 +1,24 @@
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 60px);
+  width: 480px;
+  margin: 20px auto;
+}
+.square {
+  width: 60px;
+  height: 60px;
+}
+.square.dark {
+  background-color: #769656;
+}
+.square.light {
+  background-color: #eeeed2;
+}
+
+.piece {
+  font-size: 36px;
+  color: black;
+}
+.white {
+  color: white;
+}
