@@ -164,35 +164,27 @@ function isValidKingMove(fromRow, fromCol, toRow, toCol, piece, board) {
     // Check if it's a king
     const isKing = pieceToMove.includes('king');
 
-
-
     let validMove = false;
 
-    if (isPawn && !isValidPawnMove(fromRow, fromCol, row, col, pieceToMove, board)) {
-      // Invalid move
-      setSelectedSquare(null);
-      return;
-    }
-    else if (isKnight) {
-      validMove = isValidKnightMove(fromRow, fromCol, row, col, pieceToMove, board);
-    }
-    else if (isRook) {
-      validMove = isValidRookMove(fromRow, fromCol, row, col, pieceToMove, board);
-    }
-    else if (isBishop) {
-      validMove = isValidBishopMove(fromRow, fromCol, row, col, pieceToMove, board);
-    } 
-    else if (isQueen) {
-      validMove = isValidQueenMove(fromRow, fromCol, row, col, pieceToMove, board);
-    } 
-     else if (isKing) {
-      validMove = isValidKingMove(fromRow, fromCol, row, col, pieceToMove, board);
-    }
+      if (isPawn) {
+        validMove = isValidPawnMove(fromRow, fromCol, row, col, pieceToMove, board);
+      } else if (isKnight) {
+        validMove = isValidKnightMove(fromRow, fromCol, row, col, pieceToMove, board);
+      } else if (isRook) {
+        validMove = isValidRookMove(fromRow, fromCol, row, col, pieceToMove, board);
+      } else if (isBishop) {
+        validMove = isValidBishopMove(fromRow, fromCol, row, col, pieceToMove, board);
+      } else if (isQueen) {
+        validMove = isValidQueenMove(fromRow, fromCol, row, col, pieceToMove, board);
+      } else if (isKing) {
+        validMove = isValidKingMove(fromRow, fromCol, row, col, pieceToMove, board);
+      }
 
-    if (!validMove) {
-      setSelectedSquare(null);
-      return;
-    }
+      if (!validMove) {
+        setSelectedSquare(null);
+        return;
+      }
+
 
     // Make a copy of the board
     const newBoard = board.map(r => [...r]);
