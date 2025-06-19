@@ -95,6 +95,32 @@ function ChessBoard() {
   return isEnemy;
 }
 
+  function isValidBishopMove(fromRow, fromCol, toRow, toCol, piece, board) {
+  const dx = Math.abs(toCol - fromCol);
+  const dy = Math.abs(toRow - fromRow);
+
+  if (dx !== dy) return false; // must be perfect diagonal
+
+  const stepRow = toRow > fromRow ? 1 : -1;
+  const stepCol = toCol > fromCol ? 1 : -1;
+
+  let r = fromRow + stepRow;
+  let c = fromCol + stepCol;
+
+  // Check path for obstructions
+  while (r !== toRow && c !== toCol) {
+    if (board[r][c]) return false; // path is blocked
+    r += stepRow;
+    c += stepCol;
+  }
+
+  const target = board[toRow][toCol];
+  if (!target) return true;
+
+  const isWhite = piece.includes('white');
+  const isEnemy = isWhite !== target.includes('white');
+  return isEnemy;
+}
 
 
   function handleSquareClick(row, col) {
@@ -110,6 +136,8 @@ function ChessBoard() {
     const isKnight = pieceToMove.includes('knight');
     // Check if it's a rook
     const isRook = pieceToMove.includes('rook');
+    // Check if it's a bishop
+    const isBishop = pieceToMove.includes('bishop');
 
     let validMove = false;
 
@@ -117,11 +145,17 @@ function ChessBoard() {
       // Invalid move
       setSelectedSquare(null);
       return;
-    }else if (isKnight) {
+    }
+    else if (isKnight) {
       validMove = isValidKnightMove(fromRow, fromCol, row, col, pieceToMove, board);
-    }else if (isRook) {
+    }
+    else if (isRook) {
       validMove = isValidRookMove(fromRow, fromCol, row, col, pieceToMove, board);
-    } else {
+    }
+    else if (isBishop) {
+      validMove = isValidBishopMove(fromRow, fromCol, row, col, pieceToMove, board);
+    } 
+     else {
       // Other pieces move freely for now
       validMove = true;
     }
