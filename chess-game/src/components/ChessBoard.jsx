@@ -20,7 +20,7 @@ function ChessBoard() {
     const [selectedSquare, setSelectedSquare] = useState(null); 
     const [currentTurn, setCurrentTurn] = useState('white');
 
- function isValidPawnMove(fromRow, fromCol, toRow, toCol, piece, board) {
+  function isValidPawnMove(fromRow, fromCol, toRow, toCol, piece, board) {
       const isWhite = piece.includes('white');
       const direction = isWhite ? -1 : 1;
 
@@ -46,6 +46,27 @@ function ChessBoard() {
       return false;
   }
 
+  function isValidKnightMove(fromRow, fromCol, toRow, toCol, piece, board) {
+  const dx = Math.abs(toCol - fromCol);
+  const dy = Math.abs(toRow - fromRow);
+
+  const target = board[toRow][toCol];
+
+  // L-shape check (2 + 1)
+  const isLShape = (dx === 2 && dy === 1) || (dx === 1 && dy === 2);
+
+  if (!isLShape) return false;
+
+  // If target square is empty, move is valid
+  if (!target) return true;
+
+  // If there's a piece, it must be from the opposite team
+  const isWhite = piece.includes('white');
+  const isEnemy = isWhite !== target.includes('white');
+  return isEnemy;
+}
+
+
   function handleSquareClick(row, col) {
   const clickedPiece = board[row][col];
 
@@ -55,9 +76,23 @@ function ChessBoard() {
 
     // Check if it's a pawn
     const isPawn = pieceToMove.includes('pawn');
+     // Check if it's a knight
+    const isKnight = pieceToMove.includes('knight');
+
+    let validMove = false;
 
     if (isPawn && !isValidPawnMove(fromRow, fromCol, row, col, pieceToMove, board)) {
       // Invalid move
+      setSelectedSquare(null);
+      return;
+    }else if (isKnight) {
+      validMove = isValidKnightMove(fromRow, fromCol, row, col, pieceToMove, board);
+    }else {
+      // Other pieces move freely for now
+      validMove = true;
+    }
+
+    if (!validMove) {
       setSelectedSquare(null);
       return;
     }
