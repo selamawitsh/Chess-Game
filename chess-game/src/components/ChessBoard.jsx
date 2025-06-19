@@ -16,26 +16,51 @@ function ChessBoard() {
     ['fas fa-chess-rook white', 'fas fa-chess-knight white', 'fas fa-chess-bishop white', 'fas fa-chess-queen white', 'fas fa-chess-king white', 'fas fa-chess-bishop white', 'fas fa-chess-knight white', 'fas fa-chess-rook white']
     ];
 
-    //   for (let row=0; row<8 ; row++) {
-    //     for (let col=0; col<8; col++){
-    //         const isDark = (row + col) % 2 === 1;
-    //         board.push(
-    //             <Square key={`${row}-${col}`} isDark={isDark} />
-    //         );
-    //     }
-    //   }
-
     const [board, setBoard] = useState(initialBoard);
     const [selectedSquare, setSelectedSquare] = useState(null); 
     const [currentTurn, setCurrentTurn] = useState('white');
 
+ function isValidPawnMove(fromRow, fromCol, toRow, toCol, piece, board) {
+      const isWhite = piece.includes('white');
+      const direction = isWhite ? -1 : 1;
 
-    function handleSquareClick(row, col) {
+      const startRow = isWhite ? 6 : 1;
+      const target = board[toRow][toCol];
+
+      // 1. Normal move (1 square forward)
+      if (toCol === fromCol && toRow === fromRow + direction && !target) {
+        return true;
+      }
+
+      // 2. First move (2 squares forward)
+      if (toCol === fromCol && fromRow === startRow && toRow === fromRow + 2 * direction && !target && !board[fromRow + direction][fromCol]) {
+        return true;
+      }
+
+      // 3. Diagonal capture
+      if (Math.abs(toCol - fromCol) === 1 && toRow === fromRow + direction && target) {
+        const isEnemy = isWhite !== target.includes('white');
+        if (isEnemy) return true;
+      }
+
+      return false;
+  }
+
+  function handleSquareClick(row, col) {
   const clickedPiece = board[row][col];
 
   if (selectedSquare) {
     const { row: fromRow, col: fromCol } = selectedSquare;
     const pieceToMove = board[fromRow][fromCol];
+
+    // Check if it's a pawn
+    const isPawn = pieceToMove.includes('pawn');
+
+    if (isPawn && !isValidPawnMove(fromRow, fromCol, row, col, pieceToMove, board)) {
+      // Invalid move
+      setSelectedSquare(null);
+      return;
+    }
 
     // Make a copy of the board
     const newBoard = board.map(r => [...r]);
@@ -49,7 +74,8 @@ function ChessBoard() {
 
     // Switch turn
     setCurrentTurn(currentTurn === 'white' ? 'black' : 'white');
-  } else if (clickedPiece) {
+  } 
+  else if (clickedPiece) {
     const isWhite = clickedPiece.includes('white');
 
     // Check if clicked piece belongs to the player whose turn it is
