@@ -64,7 +64,37 @@ function ChessBoard() {
   const isWhite = piece.includes('white');
   const isEnemy = isWhite !== target.includes('white');
   return isEnemy;
+  }
+
+  function isValidRookMove(fromRow, fromCol, toRow, toCol, piece, board) {
+  const isSameRow = fromRow === toRow;
+  const isSameCol = fromCol === toCol;
+  const target = board[toRow][toCol];
+
+  if (!isSameRow && !isSameCol) return false; // must be straight
+
+  const isWhite = piece.includes('white');
+
+  // Determine direction
+  const stepRow = toRow > fromRow ? 1 : toRow < fromRow ? -1 : 0;
+  const stepCol = toCol > fromCol ? 1 : toCol < fromCol ? -1 : 0;
+
+  // Check path (exclude the destination square)
+  let r = fromRow + stepRow;
+  let c = fromCol + stepCol;
+  while (r !== toRow || c !== toCol) {
+    if (board[r][c]) return false; // path is blocked
+    r += stepRow;
+    c += stepCol;
+  }
+
+  // Check destination
+  if (!target) return true;
+
+  const isEnemy = isWhite !== target.includes('white');
+  return isEnemy;
 }
+
 
 
   function handleSquareClick(row, col) {
@@ -78,6 +108,8 @@ function ChessBoard() {
     const isPawn = pieceToMove.includes('pawn');
      // Check if it's a knight
     const isKnight = pieceToMove.includes('knight');
+    // Check if it's a rook
+    const isRook = pieceToMove.includes('rook');
 
     let validMove = false;
 
@@ -87,7 +119,9 @@ function ChessBoard() {
       return;
     }else if (isKnight) {
       validMove = isValidKnightMove(fromRow, fromCol, row, col, pieceToMove, board);
-    }else {
+    }else if (isRook) {
+      validMove = isValidRookMove(fromRow, fromCol, row, col, pieceToMove, board);
+    } else {
       // Other pieces move freely for now
       validMove = true;
     }
