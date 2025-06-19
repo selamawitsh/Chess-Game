@@ -122,6 +122,13 @@ function ChessBoard() {
   return isEnemy;
 }
 
+function isValidQueenMove(fromRow, fromCol, toRow, toCol, piece, board) {
+  return (
+    isValidRookMove(fromRow, fromCol, toRow, toCol, piece, board) ||
+    isValidBishopMove(fromRow, fromCol, toRow, toCol, piece, board)
+  );
+}
+
 
   function handleSquareClick(row, col) {
   const clickedPiece = board[row][col];
@@ -138,6 +145,9 @@ function ChessBoard() {
     const isRook = pieceToMove.includes('rook');
     // Check if it's a bishop
     const isBishop = pieceToMove.includes('bishop');
+    // Check if it's a queen
+    const isQueen = pieceToMove.includes('queen');
+
 
     let validMove = false;
 
@@ -154,6 +164,9 @@ function ChessBoard() {
     }
     else if (isBishop) {
       validMove = isValidBishopMove(fromRow, fromCol, row, col, pieceToMove, board);
+    } 
+    else if (isQueen) {
+      validMove = isValidQueenMove(fromRow, fromCol, row, col, pieceToMove, board);
     } 
      else {
       // Other pieces move freely for now
