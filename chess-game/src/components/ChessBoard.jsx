@@ -129,6 +129,20 @@ function isValidQueenMove(fromRow, fromCol, toRow, toCol, piece, board) {
   );
 }
 
+function isValidKingMove(fromRow, fromCol, toRow, toCol, piece, board) {
+  const dx = Math.abs(toCol - fromCol);
+  const dy = Math.abs(toRow - fromRow);
+
+  if (dx > 1 || dy > 1) return false; // can only move one square
+
+  const target = board[toRow][toCol];
+  if (!target) return true;
+
+  const isWhite = piece.includes('white');
+  const isEnemy = isWhite !== target.includes('white');
+  return isEnemy;
+}
+
 
   function handleSquareClick(row, col) {
   const clickedPiece = board[row][col];
@@ -147,6 +161,9 @@ function isValidQueenMove(fromRow, fromCol, toRow, toCol, piece, board) {
     const isBishop = pieceToMove.includes('bishop');
     // Check if it's a queen
     const isQueen = pieceToMove.includes('queen');
+    // Check if it's a king
+    const isKing = pieceToMove.includes('king');
+
 
 
     let validMove = false;
@@ -168,9 +185,8 @@ function isValidQueenMove(fromRow, fromCol, toRow, toCol, piece, board) {
     else if (isQueen) {
       validMove = isValidQueenMove(fromRow, fromCol, row, col, pieceToMove, board);
     } 
-     else {
-      // Other pieces move freely for now
-      validMove = true;
+     else if (isKing) {
+      validMove = isValidKingMove(fromRow, fromCol, row, col, pieceToMove, board);
     }
 
     if (!validMove) {
